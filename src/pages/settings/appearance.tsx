@@ -305,9 +305,12 @@ const AppearanceSettingsPage = () => {
         <Card
           w="6rem"
           h="3.375rem"
-          borderWidth={selected ? 2 : 0}
-          borderColor={`${primaryColor}.500`}
-          variant={selected ? "outline" : "elevated"}
+          boxShadow={
+            selected
+              ? `0 0 0 2px var(--chakra-colors-${primaryColor}-500)`
+              : "xs"
+          }
+          transition="box-shadow 0.2s"
           overflow="hidden"
           cursor="pointer"
           onMouseEnter={() => setIsHovered(true)}
