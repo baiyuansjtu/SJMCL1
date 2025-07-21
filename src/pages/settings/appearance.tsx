@@ -305,12 +305,9 @@ const AppearanceSettingsPage = () => {
         <Card
           w="6rem"
           h="3.375rem"
-          boxShadow={
-            selected
-              ? `0 0 0 2px var(--chakra-colors-${primaryColor}-500)`
-              : "xs"
-          }
-          transition="box-shadow 0.2s"
+          {...(selected && {
+            boxShadow: `0 0 0 1.5px var(--chakra-colors-${primaryColor}-500)`,
+          })}
           overflow="hidden"
           cursor="pointer"
           onMouseEnter={() => setIsHovered(true)}
