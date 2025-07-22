@@ -15,7 +15,6 @@ import {
   LuFolderOpen,
   LuFolderSearch,
   LuInfo,
-  LuNewspaper,
   LuPenLine,
   LuPlus,
   LuRefreshCcw,
@@ -53,7 +52,6 @@ export const CommonIconButton: React.FC<CommonIconButtonProps> = ({
     openFolder: <LuFolderOpen />,
     refresh: <LuRefreshCcw />,
     revealFile: <LuFolderSearch />,
-    sources: <LuNewspaper />,
   };
 
   const specLabels: Record<string, string> = {
@@ -62,7 +60,6 @@ export const CommonIconButton: React.FC<CommonIconButtonProps> = ({
     revealFile: t("General.revealFile", {
       opener: t(`Enums.systemFileManager.${config.basicInfo.osType}`),
     }),
-    sources: t("DiscoverPage.sources"),
   };
 
   const selectedIcon =

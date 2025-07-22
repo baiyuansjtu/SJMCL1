@@ -3,6 +3,7 @@ import { Masonry } from "masonic";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { LuNewspaper } from "react-icons/lu";
 import { BeatLoader } from "react-spinners";
 import { CommonIconButton } from "@/components/common/common-icon-button";
 import Empty from "@/components/common/empty";
@@ -72,9 +73,11 @@ export const DiscoverPage = () => {
   const hasMore = Object.values(sourceCursors).some(
     (cursor) => cursor !== null
   );
+
   const secMenu = [
     {
-      icon: "sources",
+      icon: LuNewspaper,
+      label: t("DiscoverPage.sources"),
       onClick: () => router.push("/discover/sources"),
     },
     {
@@ -110,6 +113,7 @@ export const DiscoverPage = () => {
             <CommonIconButton
               key={index}
               icon={btn.icon}
+              label={btn.label}
               onClick={btn.onClick}
               size="xs"
               fontSize="sm"
