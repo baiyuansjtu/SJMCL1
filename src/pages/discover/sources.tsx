@@ -46,7 +46,7 @@ export const DiscoverSourcesPage = () => {
     });
   }, [setSourcesInfo]);
 
-  const handleRemoveSource = async (urlToRemove: string) => {
+  const handleRemoveSource = (urlToRemove: string) => {
     const updated = sources.filter((url) => url !== urlToRemove);
     update("discoverSourceEndpoints", updated);
     setSourcesInfo(updated.map((url) => ({ endpointUrl: url })));

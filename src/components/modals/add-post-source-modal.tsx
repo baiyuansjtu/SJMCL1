@@ -24,7 +24,7 @@ const AddDiscoverSourceModal: React.FC<Omit<ModalProps, "children">> = ({
   const primaryColor = config.appearance.theme.primaryColor;
   const [endpointUrl, setEndpointUrl] = useState<string>("");
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     const trimmed = endpointUrl.trim();
     const current = config.discoverSourceEndpoints;
 
