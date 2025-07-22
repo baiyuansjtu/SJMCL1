@@ -83,7 +83,7 @@ const InstanceWidgetBase: React.FC<InstanceWidgetBaseProps> = ({
           {title}
         </Text>
       )}
-      <div style={{ zIndex: 998 }}>{children}</div>
+      {children}
       {icon && (
         <Icon
           as={icon}
@@ -130,6 +130,7 @@ export const InstanceBasicInfoWidget = () => {
         }
       />
       <OptionItem
+        zIndex={998}
         title={t("InstanceWidgets.basicInfo.playTime")}
         description={formatTimeInterval(summary?.playTime || 0)}
         prefixElement={
@@ -295,6 +296,7 @@ export const InstanceModsWidget = () => {
           <Empty withIcon={false} size="sm" />
         )}
         <Button
+          zIndex={998}
           size="xs"
           variant="ghost"
           position="absolute"
@@ -390,6 +392,7 @@ export const InstanceLastPlayedWidget = () => {
           </HStack>
           <HStack spacing={1.5} position="absolute" left={2} bottom={2}>
             <Button
+              zIndex={998}
               size="xs"
               variant="ghost"
               colorScheme={primaryColor}
