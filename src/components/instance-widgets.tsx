@@ -83,7 +83,7 @@ const InstanceWidgetBase: React.FC<InstanceWidgetBaseProps> = ({
           {title}
         </Text>
       )}
-      {children}
+      <div style={{ zIndex: 998 }}>{children}</div>
       {icon && (
         <Icon
           as={icon}
@@ -130,7 +130,6 @@ export const InstanceBasicInfoWidget = () => {
         }
       />
       <OptionItem
-        zIndex={998}
         title={t("InstanceWidgets.basicInfo.playTime")}
         description={formatTimeInterval(summary?.playTime || 0)}
         prefixElement={
