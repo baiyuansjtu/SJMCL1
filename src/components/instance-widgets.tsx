@@ -130,6 +130,7 @@ export const InstanceBasicInfoWidget = () => {
         }
       />
       <OptionItem
+        zIndex={998}
         title={t("InstanceWidgets.basicInfo.playTime")}
         description={formatTimeInterval(summary?.playTime || 0)}
         prefixElement={
