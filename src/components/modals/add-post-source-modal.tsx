@@ -33,7 +33,7 @@ const AddDiscoverSourceModal: React.FC<Omit<ModalProps, "children">> = ({
     }
 
     const updated = [...current, trimmed];
-    await update("discoverSourceEndpoints", updated);
+    update("discoverSourceEndpoints", updated);
     setEndpointUrl("");
     props.onClose();
   };
