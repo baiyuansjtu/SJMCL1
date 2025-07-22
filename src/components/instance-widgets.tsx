@@ -109,39 +109,44 @@ export const InstanceBasicInfoWidget = () => {
       title={t("InstanceWidgets.basicInfo.title")}
       icon={LuBox}
     >
-      <OptionItem
-        title={t("InstanceWidgets.basicInfo.gameVersion")}
-        description={
-          <VStack
-            spacing={0}
-            fontSize="xs"
-            alignItems="flex-start"
-            className="secondary-text"
-          >
-            {summary?.version && <Text>{summary.version}</Text>}
-            {summary?.modLoader.loaderType &&
-              summary?.modLoader.loaderType !== "Unknown" && (
-                <Text>{`${summary?.modLoader.loaderType} ${summary?.modLoader.version}`}</Text>
-              )}
-          </VStack>
-        }
-        prefixElement={
-          <Image src={summary?.iconSrc} alt={summary?.iconSrc} boxSize="28px" />
-        }
-      />
-      <OptionItem
-        zIndex={998}
-        title={t("InstanceWidgets.basicInfo.playTime")}
-        description={formatTimeInterval(summary?.playTime || 0)}
-        prefixElement={
-          <Center
-            boxSize={7}
-            color={`${primaryColor}.${useColorModeValue(600, 200)}`}
-          >
-            <LuCalendarClock fontSize="24px" />
-          </Center>
-        }
-      />
+      <div style={{ zIndex: 998 }}>
+        <OptionItem
+          title={t("InstanceWidgets.basicInfo.gameVersion")}
+          description={
+            <VStack
+              spacing={0}
+              fontSize="xs"
+              alignItems="flex-start"
+              className="secondary-text"
+            >
+              {summary?.version && <Text>{summary.version}</Text>}
+              {summary?.modLoader.loaderType &&
+                summary?.modLoader.loaderType !== "Unknown" && (
+                  <Text>{`${summary?.modLoader.loaderType} ${summary?.modLoader.version}`}</Text>
+                )}
+            </VStack>
+          }
+          prefixElement={
+            <Image
+              src={summary?.iconSrc}
+              alt={summary?.iconSrc}
+              boxSize="28px"
+            />
+          }
+        />
+        <OptionItem
+          title={t("InstanceWidgets.basicInfo.playTime")}
+          description={formatTimeInterval(summary?.playTime || 0)}
+          prefixElement={
+            <Center
+              boxSize={7}
+              color={`${primaryColor}.${useColorModeValue(600, 200)}`}
+            >
+              <LuCalendarClock fontSize="24px" />
+            </Center>
+          }
+        />
+      </div>
     </InstanceWidgetBase>
   );
 };
@@ -269,53 +274,54 @@ export const InstanceModsWidget = () => {
       title={t("InstanceWidgets.mods.title")}
       icon={LuSquareLibrary}
     >
-      <VStack align="stretch" w="100%" spacing={3}>
-        {isLoading ? (
-          <Center mt={4}>
-            <BeatLoader size={8} color="gray" />
-          </Center>
-        ) : localMods.length > 0 ? (
-          <>
-            <AvatarGroup size="sm" max={5} spacing={-2.5}>
-              {localMods.map((mod, index) => (
-                <Avatar
-                  key={index}
-                  name={mod.name || mod.fileName}
-                  src={base64ImgSrc(mod.iconSrc)}
-                  style={{
-                    filter: mod.enabled ? "none" : "grayscale(90%)",
-                  }}
-                />
-              ))}
-            </AvatarGroup>
-            <Text fontSize="xs" color="gray.500">
-              {t("InstanceWidgets.mods.summary", { totalMods, enabledMods })}
-            </Text>
-          </>
-        ) : (
-          <Empty withIcon={false} size="sm" />
-        )}
-        <Button
-          zIndex={998}
-          size="xs"
-          variant="ghost"
-          position="absolute"
-          left={2}
-          bottom={2}
-          justifyContent="flex-start"
-          colorScheme={primaryColor}
-          onClick={() => {
-            router.push(
-              `/instances/details/${encodeURIComponent(instanceId || "")}/mods`
-            );
-          }}
-        >
-          <HStack spacing={1.5}>
-            <Icon as={LuArrowRight} />
-            <Text>{t("InstanceWidgets.mods.manage")}</Text>
-          </HStack>
-        </Button>
-      </VStack>
+      <div style={{ zIndex: 998 }}>
+        <VStack align="stretch" w="100%" spacing={3}>
+          {isLoading ? (
+            <Center mt={4}>
+              <BeatLoader size={8} color="gray" />
+            </Center>
+          ) : localMods.length > 0 ? (
+            <>
+              <AvatarGroup size="sm" max={5} spacing={-2.5}>
+                {localMods.map((mod, index) => (
+                  <Avatar
+                    key={index}
+                    name={mod.name || mod.fileName}
+                    src={base64ImgSrc(mod.iconSrc)}
+                    style={{
+                      filter: mod.enabled ? "none" : "grayscale(90%)",
+                    }}
+                  />
+                ))}
+              </AvatarGroup>
+              <Text fontSize="xs" color="gray.500">
+                {t("InstanceWidgets.mods.summary", { totalMods, enabledMods })}
+              </Text>
+            </>
+          ) : (
+            <Empty withIcon={false} size="sm" />
+          )}
+          <Button
+            size="xs"
+            variant="ghost"
+            position="absolute"
+            left={2}
+            bottom={2}
+            justifyContent="flex-start"
+            colorScheme={primaryColor}
+            onClick={() => {
+              router.push(
+                `/instances/details/${encodeURIComponent(instanceId || "")}/mods`
+              );
+            }}
+          >
+            <HStack spacing={1.5}>
+              <Icon as={LuArrowRight} />
+              <Text>{t("InstanceWidgets.mods.manage")}</Text>
+            </HStack>
+          </Button>
+        </VStack>
+      </div>
     </InstanceWidgetBase>
   );
 };
@@ -352,62 +358,63 @@ export const InstanceLastPlayedWidget = () => {
       title={t("InstanceWidgets.lastPlayed.title")}
       icon={LuClock4}
     >
-      {isLoading ? (
-        <Center mt={4}>
-          <BeatLoader size={8} color="gray" />
-        </Center>
-      ) : lastPlayedWorld ? (
-        <VStack spacing={3} alignItems="flex-start" w="full">
-          <HStack spacing={3} w="full" alignItems="center">
-            <Image
-              src={convertFileSrc(lastPlayedWorld.iconSrc)}
-              fallbackSrc="/images/icons/UnknownWorld.webp"
-              alt={lastPlayedWorld.name}
-              boxSize="28px"
-              borderRadius="4px"
-            />
-            <Box flex="1" minW={0}>
-              <VStack spacing={0} alignItems="start" w="full">
-                <Text fontSize="xs-sm" w="full" isTruncated>
-                  {lastPlayedWorld.name}
-                </Text>
-                <Text className="secondary-text" fontSize="xs">
-                  {formatRelativeTime(
-                    UNIXToISOString(lastPlayedWorld.lastPlayedAt),
-                    t
-                  ).replace("on", "")}
-                </Text>
-                <Text className="secondary-text" fontSize="xs">
-                  {t(
-                    `InstanceWorldsPage.worldList.gamemode.${lastPlayedWorld.gamemode}`
-                  )}
-                </Text>
-                <Text className="secondary-text" fontSize="xs">
-                  {t(
-                    `InstanceWorldsPage.worldList.difficulty.${lastPlayedWorld.difficulty}`
-                  )}
-                </Text>
-              </VStack>
-            </Box>
-          </HStack>
-          <HStack spacing={1.5} position="absolute" left={2} bottom={2}>
-            <Button
-              zIndex={998}
-              size="xs"
-              variant="ghost"
-              colorScheme={primaryColor}
-              justifyContent="flex-start"
-            >
-              <HStack spacing={1.5}>
-                <Icon as={LuArrowRight} />
-                <Text>{t("InstanceWidgets.lastPlayed.continuePlaying")}</Text>
-              </HStack>
-            </Button>
-          </HStack>
-        </VStack>
-      ) : (
-        <Empty withIcon={false} size="sm" />
-      )}
+      <div style={{ zIndex: 998 }}>
+        {isLoading ? (
+          <Center mt={4}>
+            <BeatLoader size={8} color="gray" />
+          </Center>
+        ) : lastPlayedWorld ? (
+          <VStack spacing={3} alignItems="flex-start" w="full">
+            <HStack spacing={3} w="full" alignItems="center">
+              <Image
+                src={convertFileSrc(lastPlayedWorld.iconSrc)}
+                fallbackSrc="/images/icons/UnknownWorld.webp"
+                alt={lastPlayedWorld.name}
+                boxSize="28px"
+                borderRadius="4px"
+              />
+              <Box flex="1" minW={0}>
+                <VStack spacing={0} alignItems="start" w="full">
+                  <Text fontSize="xs-sm" w="full" isTruncated>
+                    {lastPlayedWorld.name}
+                  </Text>
+                  <Text className="secondary-text" fontSize="xs">
+                    {formatRelativeTime(
+                      UNIXToISOString(lastPlayedWorld.lastPlayedAt),
+                      t
+                    ).replace("on", "")}
+                  </Text>
+                  <Text className="secondary-text" fontSize="xs">
+                    {t(
+                      `InstanceWorldsPage.worldList.gamemode.${lastPlayedWorld.gamemode}`
+                    )}
+                  </Text>
+                  <Text className="secondary-text" fontSize="xs">
+                    {t(
+                      `InstanceWorldsPage.worldList.difficulty.${lastPlayedWorld.difficulty}`
+                    )}
+                  </Text>
+                </VStack>
+              </Box>
+            </HStack>
+            <HStack spacing={1.5} position="absolute" left={2} bottom={2}>
+              <Button
+                size="xs"
+                variant="ghost"
+                colorScheme={primaryColor}
+                justifyContent="flex-start"
+              >
+                <HStack spacing={1.5}>
+                  <Icon as={LuArrowRight} />
+                  <Text>{t("InstanceWidgets.lastPlayed.continuePlaying")}</Text>
+                </HStack>
+              </Button>
+            </HStack>
+          </VStack>
+        ) : (
+          <Empty withIcon={false} size="sm" />
+        )}
+      </div>
     </InstanceWidgetBase>
   );
 };
