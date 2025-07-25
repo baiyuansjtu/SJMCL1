@@ -105,10 +105,23 @@ export const LauncherConfigContextProvider: React.FC<{
   }, []);
 
   useEffect(() => {
-    const unlisten = ConfigService.onConfigPartialUpdate(
-      handleConfigPartialUpdate
+    let unlistenFn: (() => void) | null = null;
+    let mounted = true;
+
+    ConfigService.onConfigPartialUpdate(handleConfigPartialUpdate).then(
+      (fn) => {
+        if (!mounted) {
+          fn();
+          return;
+        }
+        unlistenFn = fn;
+      }
     );
-    return () => unlisten();
+
+    return () => {
+      mounted = false;
+      if (unlistenFn) unlistenFn();
+    };
   }, [handleConfigPartialUpdate]);
 
   const handleRetrieveJavaList = useCallback(() => {

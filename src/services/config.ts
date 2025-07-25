@@ -147,18 +147,15 @@ export class ConfigService {
    * Listens for backend-initiated changes to the `config` field.
    * @param callback - Callback function invoked whenever the config is updated by the backend.
    */
-  static onConfigPartialUpdate(
+  static async onConfigPartialUpdate(
     callback: (payload: { path: string; value: any }) => void
-  ) {
-    const unlisten = getCurrentWebview().listen<{ path: string; value: any }>(
+  ): Promise<() => void> {
+    const fn = await getCurrentWebview().listen<{ path: string; value: any }>(
       "config:partial-update",
       (event) => {
         callback(event.payload);
       }
     );
-
-    return () => {
-      unlisten.then((f) => f());
-    };
+    return fn;
   }
 }
