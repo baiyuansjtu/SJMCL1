@@ -158,12 +158,8 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
     (taskGroup: string, params: TaskParam[]) => {
       TaskService.scheduleProgressiveTaskGroup(taskGroup, params).then(
         (response) => {
-          if (response.status === "success") {
-            toast({
-              title: response.message,
-              status: "success",
-            });
-          } else {
+          // success toast will now be called by task context group listener
+          if (response.status !== "success") {
             toast({
               title: response.message,
               description: response.details,
@@ -365,6 +361,9 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
                     ) {
                       t.status = TaskDescStatusEnums.Completed;
                       t.current = t.total;
+                    } else if (t.status === TaskDescStatusEnums.Failed) {
+                      task.status = GTaskEventStatusEnums.Failed;
+                      payload.event.status = GTaskEventStatusEnums.Failed;
                     }
                   });
                 }

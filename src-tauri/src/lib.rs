@@ -127,8 +127,8 @@ pub async fn run() {
       resource::commands::download_game_server,
       resource::commands::fetch_remote_resource_by_local,
       resource::commands::update_mods,
-      discover::commands::fetch_post_sources_info,
-      discover::commands::fetch_post_summaries,
+      discover::commands::fetch_news_sources_info,
+      discover::commands::fetch_news_post_summaries,
       tasks::commands::schedule_progressive_task_group,
       tasks::commands::cancel_progressive_task,
       tasks::commands::resume_progressive_task,
@@ -205,7 +205,7 @@ pub async fn run() {
       // Refresh all instances
       let app_handle = app.handle().clone();
       tauri::async_runtime::spawn(async move {
-        refresh_and_update_instances(&app_handle).await;
+        refresh_and_update_instances(&app_handle, true).await;
       });
 
       // Refresh all javas
