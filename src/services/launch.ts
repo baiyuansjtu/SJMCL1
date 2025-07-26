@@ -113,16 +113,15 @@ export class LaunchService {
    * LISTEN to the game log output line by line.
    * @param callback The callback function to be called when the game log is output.
    */
-  static onGameProcessOutput(callback: (payload: string) => void) {
-    const unlisten = getCurrentWebview().listen<string>(
+  static async onGameProcessOutput(
+    callback: (payload: string) => void
+  ): Promise<() => void> {
+    const unlisten = await getCurrentWebview().listen<string>(
       "launch:game-process-output",
       (event) => {
         callback(event.payload);
       }
     );
-
-    return () => {
-      unlisten.then((f) => f());
-    };
+    return unlisten;
   }
 }

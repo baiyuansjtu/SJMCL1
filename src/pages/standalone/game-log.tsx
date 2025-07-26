@@ -53,10 +53,17 @@ const GameLogPage: React.FC = () => {
 
   // keep listening to game process output
   useEffect(() => {
-    const unlisten = LaunchService.onGameProcessOutput((payload) => {
+    let unlisten: (() => void) | undefined;
+
+    LaunchService.onGameProcessOutput((payload) => {
       setLogs((prevLogs) => [...prevLogs, payload]);
+    }).then((fn) => {
+      unlisten = fn;
     });
-    return () => unlisten();
+
+    return () => {
+      unlisten?.();
+    };
   }, []);
 
   let lastLevel: string = "INFO";

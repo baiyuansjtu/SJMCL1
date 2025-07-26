@@ -123,19 +123,16 @@ export class TaskService {
    * Listen for updates to progressive tasks.
    * @param callback - The callback to be invoked when a task update occurs.
    */
-  static onProgressiveTaskUpdate(
+  static async onProgressiveTaskUpdate(
     callback: (payload: PTaskEventPayload) => void
-  ): () => void {
-    const unlisten = getCurrentWebview().listen<PTaskEventPayload>(
+  ): Promise<() => void> {
+    const fn = await getCurrentWebview().listen<PTaskEventPayload>(
       "task:progress-update",
       (event) => {
         callback(event.payload);
       }
     );
-
-    return () => {
-      unlisten.then((f) => f());
-    };
+    return fn;
   }
 
   /**
@@ -143,17 +140,15 @@ export class TaskService {
    * @param callback - The callback to be invoked when a task group update occurs.
    */
 
-  static onTaskGroupUpdate(
+  static async onTaskGroupUpdate(
     callback: (payload: GTaskEventPayload) => void
-  ): () => void {
-    const unlisten = getCurrentWebview().listen<GTaskEventPayload>(
+  ): Promise<() => void> {
+    const fn = await getCurrentWebview().listen<GTaskEventPayload>(
       "task:group-update",
       (event) => {
         callback(event.payload);
       }
     );
-    return () => {
-      unlisten.then((f) => f());
-    };
+    return fn;
   }
 }
