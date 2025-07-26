@@ -1,9 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
-import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { LauncherConfig } from "@/models/config";
 import { InvokeResponse } from "@/models/response";
 import { JavaInfo } from "@/models/system-info";
 import { responseHandler } from "@/utils/response";
+import { safeEventListen } from "@/utils/safeEventListener";
 
 /**
  * Service class for managing launcher configurations.
@@ -148,14 +148,13 @@ export class ConfigService {
    * @param callback - Callback function invoked whenever the config is updated by the backend.
    */
   static async onConfigPartialUpdate(
-    callback: (payload: { path: string; value: any }) => void
+    callback?: (payload: { path: string; value: any }) => void
   ): Promise<() => void> {
-    const fn = await getCurrentWebview().listen<{ path: string; value: any }>(
+    if (!callback) return () => {};
+
+    return await safeEventListen<{ path: string; value: any }>(
       "config:partial-update",
-      (event) => {
-        callback(event.payload);
-      }
+      (event) => callback(event.payload)
     );
-    return fn;
   }
 }

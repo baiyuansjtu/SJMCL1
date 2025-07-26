@@ -53,16 +53,16 @@ const GameLogPage: React.FC = () => {
 
   // keep listening to game process output
   useEffect(() => {
-    let unlisten: (() => void) | undefined;
+    let cleanup: () => void;
 
-    LaunchService.onGameProcessOutput((payload) => {
-      setLogs((prevLogs) => [...prevLogs, payload]);
-    }).then((fn) => {
-      unlisten = fn;
-    });
+    (async () => {
+      cleanup = await LaunchService.onGameProcessOutput((payload) => {
+        setLogs((prevLogs) => [...prevLogs, payload]);
+      });
+    })();
 
     return () => {
-      unlisten?.();
+      cleanup?.();
     };
   }, []);
 

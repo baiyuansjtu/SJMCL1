@@ -105,22 +105,16 @@ export const LauncherConfigContextProvider: React.FC<{
   }, []);
 
   useEffect(() => {
-    let unlistenFn: (() => void) | null = null;
-    let mounted = true;
+    let cleanup: () => void;
 
-    ConfigService.onConfigPartialUpdate(handleConfigPartialUpdate).then(
-      (fn) => {
-        if (!mounted) {
-          fn();
-          return;
-        }
-        unlistenFn = fn;
-      }
-    );
+    (async () => {
+      cleanup = await ConfigService.onConfigPartialUpdate(
+        handleConfigPartialUpdate
+      );
+    })();
 
     return () => {
-      mounted = false;
-      if (unlistenFn) unlistenFn();
+      if (cleanup) cleanup();
     };
   }, [handleConfigPartialUpdate]);
 

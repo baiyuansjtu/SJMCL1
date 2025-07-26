@@ -1,5 +1,4 @@
 import { invoke } from "@tauri-apps/api/core";
-import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { InvokeResponse } from "@/models/response";
 import {
   GTaskEventPayload,
@@ -8,6 +7,7 @@ import {
   TaskParam,
 } from "@/models/task";
 import { responseHandler } from "@/utils/response";
+import { safeEventListen } from "@/utils/safeEventListener";
 
 /**
  * TaskService class for managing tasks.
@@ -124,15 +124,14 @@ export class TaskService {
    * @param callback - The callback to be invoked when a task update occurs.
    */
   static async onProgressiveTaskUpdate(
-    callback: (payload: PTaskEventPayload) => void
+    callback?: (payload: PTaskEventPayload) => void
   ): Promise<() => void> {
-    const fn = await getCurrentWebview().listen<PTaskEventPayload>(
+    if (!callback) return () => {};
+
+    return await safeEventListen<PTaskEventPayload>(
       "task:progress-update",
-      (event) => {
-        callback(event.payload);
-      }
+      (event) => callback(event.payload)
     );
-    return fn;
   }
 
   /**
@@ -141,14 +140,13 @@ export class TaskService {
    */
 
   static async onTaskGroupUpdate(
-    callback: (payload: GTaskEventPayload) => void
+    callback?: (payload: GTaskEventPayload) => void
   ): Promise<() => void> {
-    const fn = await getCurrentWebview().listen<GTaskEventPayload>(
+    if (!callback) return () => {};
+
+    return await safeEventListen<GTaskEventPayload>(
       "task:group-update",
-      (event) => {
-        callback(event.payload);
-      }
+      (event) => callback(event.payload)
     );
-    return fn;
   }
 }

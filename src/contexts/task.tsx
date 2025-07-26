@@ -218,10 +218,10 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   useEffect(() => {
-    let unlisten: (() => void) | undefined;
+    let cleanup: () => void;
 
     (async () => {
-      unlisten = await TaskService.onProgressiveTaskUpdate(
+      cleanup = await TaskService.onProgressiveTaskUpdate(
         (payload: PTaskEventPayload) => {
           setTasks((prevTasks) => {
             const group = prevTasks?.find(
@@ -231,18 +231,17 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
             switch (payload.event.status) {
               case PTaskEventStatusEnums.Created: {
                 if (group) {
-                  if (
-                    !group.taskDescs.some((t) => t.taskId === payload.id) &&
-                    !group.taskDescs.some(
+                  if (group.taskDescs.some((t) => t.taskId === payload.id)) {
+                    // Already exists
+                  } else if (
+                    group.taskDescs.some(
                       (t) =>
                         t.payload.dest ===
                         (payload.event as CreatedPTaskEventStatus).desc.payload
                           .dest
                     )
                   ) {
-                    group.taskDescs.unshift(payload.event.desc);
-                    updateGroupInfo(group);
-                  } else {
+                    // Retrial task
                     group.taskDescs = group.taskDescs.map((t) => {
                       if (
                         t.payload.dest ===
@@ -253,9 +252,12 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
                       }
                       return t;
                     });
+                  } else {
+                    group.taskDescs.unshift(payload.event.desc);
+                    updateGroupInfo(group);
                   }
                 } else {
-                  const newGroup: TaskGroupDesc = {
+                  let newGroup: TaskGroupDesc = {
                     status: GTaskEventStatusEnums.Started,
                     taskGroup: payload.taskGroup,
                     taskDescs: [payload.event.desc],
@@ -279,15 +281,12 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
                 break;
               }
 
-              case PTaskEventStatusEnums.InProgress: {
+              case PTaskEventStatusEnums.Completed: {
                 if (!group) return prevTasks;
                 group.taskDescs = group.taskDescs.map((t) => {
                   if (t.taskId === payload.id) {
-                    const e = payload.event as InProgressPTaskEventStatus;
-                    t.status = TaskDescStatusEnums.InProgress;
-                    t.current = e.current;
-                    t.estimatedTime = e.estimatedTime;
-                    t.speed = e.speed;
+                    t.status = TaskDescStatusEnums.Completed;
+                    t.current = t.total;
                   }
                   return t;
                 });
@@ -295,31 +294,57 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
                 break;
               }
 
-              case PTaskEventStatusEnums.Completed:
-              case PTaskEventStatusEnums.Stopped:
-              case PTaskEventStatusEnums.Cancelled:
-              case PTaskEventStatusEnums.Failed: {
+              case PTaskEventStatusEnums.Stopped: {
                 if (!group) return prevTasks;
                 group.taskDescs = group.taskDescs.map((t) => {
                   if (t.taskId === payload.id) {
-                    switch (payload.event.status) {
-                      case PTaskEventStatusEnums.Completed:
-                        t.status = TaskDescStatusEnums.Completed;
-                        t.current = t.total;
-                        break;
-                      case PTaskEventStatusEnums.Stopped:
-                        t.status = TaskDescStatusEnums.Stopped;
-                        break;
-                      case PTaskEventStatusEnums.Cancelled:
-                        t.status = TaskDescStatusEnums.Cancelled;
-                        break;
-                      case PTaskEventStatusEnums.Failed:
-                        t.status = TaskDescStatusEnums.Failed;
-                        t.reason = (
-                          payload.event as FailedPTaskEventStatus
-                        ).reason;
-                        break;
-                    }
+                    t.status = TaskDescStatusEnums.Stopped;
+                  }
+                  return t;
+                });
+                updateGroupInfo(group);
+                break;
+              }
+
+              case PTaskEventStatusEnums.Cancelled: {
+                if (!group) return prevTasks;
+                group.taskDescs = group.taskDescs.map((t) => {
+                  if (t.taskId === payload.id) {
+                    t.status = TaskDescStatusEnums.Cancelled;
+                  }
+                  return t;
+                });
+                updateGroupInfo(group);
+                break;
+              }
+
+              case PTaskEventStatusEnums.InProgress: {
+                if (!group) return prevTasks;
+                group.taskDescs = group.taskDescs.map((t) => {
+                  if (t.taskId === payload.id) {
+                    const e = payload.event as InProgressPTaskEventStatus;
+                    t.current = e.current;
+                    t.estimatedTime = e.estimatedTime;
+                    t.speed = e.speed;
+                    t.status = TaskDescStatusEnums.InProgress;
+                  }
+                  return t;
+                });
+                updateGroupInfo(group);
+                break;
+              }
+
+              case PTaskEventStatusEnums.Failed: {
+                console.error(
+                  `Task ${payload.id} failed in group ${payload.taskGroup}: ${
+                    (payload.event as FailedPTaskEventStatus).reason
+                  }`
+                );
+                if (!group) return prevTasks;
+                group.taskDescs = group.taskDescs.map((t) => {
+                  if (t.taskId === payload.id) {
+                    t.status = TaskDescStatusEnums.Failed;
+                    t.reason = (payload.event as FailedPTaskEventStatus).reason;
                   }
                   return t;
                 });
@@ -338,15 +363,15 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
     })();
 
     return () => {
-      unlisten?.();
+      cleanup?.();
     };
   }, [t, toast, updateGroupInfo]);
 
   useEffect(() => {
-    let unlisten: (() => void) | undefined;
+    let cleanup: () => void;
 
     (async () => {
-      unlisten = await TaskService.onTaskGroupUpdate(
+      cleanup = await TaskService.onTaskGroupUpdate(
         (payload: GTaskEventPayload) => {
           console.log(`Received task group update: ${payload.event.status}`);
           setTasks((prevTasks) => {
@@ -394,18 +419,19 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
               case "game-client":
                 getInstanceList(true);
                 break;
-
               case "forge-libraries":
               case "neoforge-libraries":
                 if (version) {
-                  const instanceName = getInstanceList()?.find(
+                  let instanceName = getInstanceList()?.find(
                     (i) => i.id === version
                   )?.name;
                   if (loadingToastRef.current) return;
                   loadingToastRef.current = toast({
                     title: t(
                       "Services.instance.finishModLoaderInstall.loading",
-                      { instanceName }
+                      {
+                        instanceName,
+                      }
                     ),
                     status: "loading",
                   });
@@ -415,19 +441,22 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
                         closeToast(loadingToastRef.current);
                         loadingToastRef.current = null;
                       }
-                      toast({
-                        title: response.message,
-                        description:
-                          response.status === "success"
-                            ? undefined
-                            : response.details,
-                        status: response.status,
-                      });
+                      if (response.status === "success") {
+                        toast({
+                          title: response.message,
+                          status: "success",
+                        });
+                      } else {
+                        toast({
+                          title: response.message,
+                          description: response.details,
+                          status: "error",
+                        });
+                      }
                     }
                   );
                 }
                 break;
-
               default:
                 break;
             }
@@ -437,7 +466,7 @@ export const TaskContextProvider: React.FC<{ children: React.ReactNode }> = ({
     })();
 
     return () => {
-      unlisten?.();
+      cleanup?.();
     };
   }, [closeToast, getInstanceList, t, toast, updateGroupInfo]);
 
