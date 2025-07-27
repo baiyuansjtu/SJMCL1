@@ -130,15 +130,15 @@ export const ModLoaderSelector: React.FC<ModLoaderSelectorProps> = ({
         loading={loading}
         expandedType={expandedLoaderType}
         onTypeSelect={(loaderType) => {
-          if (expandedLoaderType === loaderType) {
-            onSelectModLoader(defaultModLoaderResourceInfo);
-          } else {
+          if (loaderType !== selectedModLoader.loaderType) {
             onSelectModLoader({
               loaderType,
               version: "",
               description: "",
               stable: false,
             });
+          } else {
+            onSelectModLoader(defaultModLoaderResourceInfo);
           }
         }}
         w="100%"
