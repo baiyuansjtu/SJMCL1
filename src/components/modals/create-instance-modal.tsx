@@ -164,12 +164,7 @@ export const CreateInstanceModal: React.FC<Omit<ModalProps, "children">> = ({
             <Button variant="ghost" onClick={modalProps.onClose}>
               {t("General.cancel")}
             </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setActiveStep(0);
-              }}
-            >
+            <Button variant="ghost" onClick={() => setActiveStep(0)}>
               {t("General.previous")}
             </Button>
             <Button
