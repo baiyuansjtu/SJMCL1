@@ -95,13 +95,15 @@ const ModLoaderCards: React.FC<ModLoaderCardsProps> = ({
               </Text>
             </VStack>
           </HStack>
-          {displayMode === "selector" && expandedType && !isSelected ? null : (
+          {displayMode === "selector" &&
+          expandedType !== null &&
+          expandedType !== type ? null : (
             <IconButton
               aria-label={type}
               icon={
                 <Icon
                   as={
-                    displayMode === "selector" && isSelected
+                    displayMode === "selector" && expandedType === type
                       ? LuX
                       : LuChevronRight
                   }

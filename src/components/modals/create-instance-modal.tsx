@@ -30,7 +30,6 @@ import { InstanceBasicSettings } from "@/components/instance-basic-settings";
 import { ModLoaderSelector } from "@/components/mod-loader-selector";
 import { useLauncherConfig } from "@/contexts/config";
 import { useToast } from "@/contexts/toast";
-import { ModLoaderType } from "@/enums/instance";
 import { GameDirectory } from "@/models/config";
 import {
   GameResourceInfo,
@@ -76,8 +75,6 @@ export const CreateInstanceModal: React.FC<Omit<ModalProps, "children">> = ({
   const [instanceIconSrc, setInstanceIconSrc] = useState("");
   const [instanceDirectory, setInstanceDirectory] = useState<GameDirectory>();
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedLoaderType, setExpandedLoaderType] =
-    useState<ModLoaderType | null>(null);
 
   useEffect(() => {
     setSelectedModLoader(defaultModLoaderResourceInfo);
@@ -161,8 +158,6 @@ export const CreateInstanceModal: React.FC<Omit<ModalProps, "children">> = ({
               selectedGameVersion={selectedGameVersion}
               selectedModLoader={selectedModLoader}
               onSelectModLoader={setSelectedModLoader}
-              expandedLoaderType={expandedLoaderType}
-              onExpandLoaderType={setExpandedLoaderType}
             />
           </ModalBody>
           <ModalFooter>
@@ -172,7 +167,6 @@ export const CreateInstanceModal: React.FC<Omit<ModalProps, "children">> = ({
             <Button
               variant="ghost"
               onClick={() => {
-                setExpandedLoaderType(null);
                 setActiveStep(0);
               }}
             >
@@ -209,7 +203,6 @@ export const CreateInstanceModal: React.FC<Omit<ModalProps, "children">> = ({
     primaryColor,
     selectedGameVersion,
     selectedModLoader,
-    expandedLoaderType,
     setActiveStep,
     t,
   ]);

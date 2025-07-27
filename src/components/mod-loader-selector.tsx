@@ -18,7 +18,6 @@ import {
 import { Section } from "@/components/common/section";
 import ModLoaderCards from "@/components/mod-loader-cards";
 import { useLauncherConfig } from "@/contexts/config";
-import { ModLoaderType } from "@/enums/instance";
 import {
   GameResourceInfo,
   ModLoaderResourceInfo,
@@ -38,16 +37,12 @@ interface ModLoaderSelectorProps {
   selectedGameVersion: GameResourceInfo;
   selectedModLoader: ModLoaderResourceInfo;
   onSelectModLoader: (v: ModLoaderResourceInfo) => void;
-  expandedLoaderType?: ModLoaderType | null;
-  onExpandLoaderType?: (loaderType: ModLoaderType | null) => void;
 }
 
 export const ModLoaderSelector: React.FC<ModLoaderSelectorProps> = ({
   selectedGameVersion,
   selectedModLoader,
   onSelectModLoader,
-  expandedLoaderType,
-  onExpandLoaderType,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -55,6 +50,11 @@ export const ModLoaderSelector: React.FC<ModLoaderSelectorProps> = ({
   const primaryColor = config.appearance.theme.primaryColor;
   const [modLoaders, setModLoaders] = useState<ModLoaderResourceInfo[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const expandedLoaderType =
+    selectedModLoader.loaderType !== "Unknown"
+      ? selectedModLoader.loaderType
+      : null;
 
   useEffect(() => {
     setLoading(true);
@@ -130,19 +130,15 @@ export const ModLoaderSelector: React.FC<ModLoaderSelectorProps> = ({
         loading={loading}
         expandedType={expandedLoaderType}
         onTypeSelect={(loaderType) => {
-          if (onExpandLoaderType) {
-            if (expandedLoaderType === loaderType) {
-              onExpandLoaderType(null);
-              onSelectModLoader(defaultModLoaderResourceInfo);
-            } else {
-              onExpandLoaderType(loaderType);
-              onSelectModLoader({
-                loaderType,
-                version: "",
-                description: "",
-                stable: false,
-              });
-            }
+          if (expandedLoaderType === loaderType) {
+            onSelectModLoader(defaultModLoaderResourceInfo);
+          } else {
+            onSelectModLoader({
+              loaderType,
+              version: "",
+              description: "",
+              stable: false,
+            });
           }
         }}
         w="100%"
