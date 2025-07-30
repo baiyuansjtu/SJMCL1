@@ -101,7 +101,6 @@ const AppearanceSettingsPage = () => {
           if (response.status === "success") {
             handleRetrieveCustomBackgroundList();
             // set selected background to the new added one.
-            update("appearance.background.choice", "%%fake-temp-key");
             update("appearance.background.choice", response.data);
             toast({
               title: response.message,
