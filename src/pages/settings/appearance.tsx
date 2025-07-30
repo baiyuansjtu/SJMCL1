@@ -101,6 +101,7 @@ const AppearanceSettingsPage = () => {
           if (response.status === "success") {
             handleRetrieveCustomBackgroundList();
             // set selected background to the new added one.
+            update("appearance.background.choice", "%%fake-temp-key");
             update("appearance.background.choice", response.data);
             toast({
               title: response.message,
@@ -370,7 +371,7 @@ const AppearanceSettingsPage = () => {
           <WrapItem key={bg.fileName}>
             <BackgroundCard
               bgAlt={bg.fileName}
-              bgSrc={convertFileSrc(bg.fullPath)}
+              bgSrc={convertFileSrc(bg.fullPath) + "?t=" + Date.now()}
               selected={selectedBgKey === bg.fileName}
               onSelect={() =>
                 update("appearance.background.choice", bg.fileName)
