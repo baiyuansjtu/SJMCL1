@@ -355,6 +355,7 @@ export const InstanceLastPlayedWidget = () => {
   }, [getWorldListWrapper]);
 
   const lastPlayedWorld = localWorlds[0];
+
   return (
     <InstanceWidgetBase
       title={t("InstanceWidgets.lastPlayed.title")}
