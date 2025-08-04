@@ -287,7 +287,7 @@ pub fn generate_launch_command(
   let launch_feature = FeaturesInfo {
     is_demo_user: Some(false),
     has_custom_resolution: Some(true),
-    has_quick_plays_support: Some(true), // TODO
+    has_quick_plays_support: Some(true),
     is_quick_play_multiplayer: Some(game_config.game_server.auto_join),
     is_quick_play_singleplayer: Some(true),
     is_quick_play_realms: Some(false), // unsupported
