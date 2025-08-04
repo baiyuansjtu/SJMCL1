@@ -289,8 +289,8 @@ pub fn generate_launch_command(
     has_custom_resolution: Some(true),
     has_quick_plays_support: Some(true), // TODO
     is_quick_play_multiplayer: Some(game_config.game_server.auto_join),
-    is_quick_play_singleplayer: Some(true), // TODO
-    is_quick_play_realms: Some(false),      // unsupported
+    is_quick_play_singleplayer: Some(true),
+    is_quick_play_realms: Some(false), // unsupported
   };
 
   if let Some(client_args) = &client_info.arguments {
