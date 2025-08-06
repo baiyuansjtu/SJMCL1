@@ -130,6 +130,7 @@ export const DownloadJavaModal: React.FC<Omit<ModalProps, "children">> = ({
                 size="sm"
                 fontSize="sm"
               />
+
               <MenuSelector
                 options={[
                   { value: "jdk", label: "JDK" },
