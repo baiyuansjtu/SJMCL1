@@ -28,7 +28,7 @@ interface JavaVendor {
   getUrl: (params: {
     version: string;
     os: string;
-    arch: string;
+    archParam: string;
     type: "jdk" | "jre";
   }) => string;
 }
@@ -41,8 +41,7 @@ const VENDORS: Record<VendorKey, JavaVendor> = {
       x86_64: "x86-64-bit",
       aarch64: "arm-64-bit",
     },
-    getUrl: ({ version, os, arch, type }) => {
-      const archParam = VENDORS.zulu.archMap[arch];
+    getUrl: ({ version, os, archParam, type }) => {
       const archQuery = archParam ? `&architecture=${archParam}` : "";
       return `https://www.azul.com/downloads/?version=java-${version}-lts&os=${os}${archQuery}&package=${type}&show-old-builds=true#zulu`;
     },
@@ -54,8 +53,7 @@ const VENDORS: Record<VendorKey, JavaVendor> = {
       x86_64: "x86",
       aarch64: "arm",
     },
-    getUrl: ({ version, os, arch, type }) => {
-      const archParam = VENDORS.bellsoft.archMap[arch];
+    getUrl: ({ version, os, archParam, type }) => {
       return `https://bell-sw.com/pages/downloads/?version=java-${version}&os=${os}&package=${type}&architecture=${archParam}`;
     },
   },
@@ -86,10 +84,13 @@ export const DownloadJavaModal: React.FC<Omit<ModalProps, "children">> = ({
   const handleConfirm = () => {
     if (!vendor || !version || !type) return;
 
-    const url = VENDORS[vendor].getUrl({
+    const selectedVendor = VENDORS[vendor];
+    const archParam = selectedVendor.archMap[arch] || "";
+
+    const url = selectedVendor.getUrl({
       version,
       os,
-      arch,
+      archParam,
       type: type as "jdk" | "jre",
     });
 
