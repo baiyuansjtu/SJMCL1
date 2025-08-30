@@ -118,6 +118,7 @@ export interface LauncherConfig {
       launchPageQuickSwitch: boolean;
     };
   };
+  downloadOptionalMods: boolean;
   localGameDirectories: GameDirectory[];
   globalGameConfig: GameConfig;
   discoverSourceEndpoints: string[];
@@ -264,6 +265,7 @@ export const defaultConfig: LauncherConfig = {
       launchPageQuickSwitch: false,
     },
   },
+  downloadOptionalMods: true,
   localGameDirectories: [{ name: "Current", dir: ".minecraft/" }],
   globalGameConfig: defaultGameConfig,
   discoverSourceEndpoints: [
