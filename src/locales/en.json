@@ -920,6 +920,19 @@
       "title": "Workaround",
       "settings": {
         "noJvmArgs": "Do not add default Java VM arguments",
+        "graphicsApi": {
+          "title": "Graphics API",
+          "normal": "Default",
+          "openGL": "OpenGL",
+          "vulkan": "Vulkan"
+        },
+        "renderer": {
+          "title": "Renderer",
+          "normal": "Default",
+          "mesaLavapipe": "Mesa Lavapool",
+          "mesaDozen": "Mesa Dozen",
+          "amd": "AMD"
+        },
         "gameFileValidatePolicy": {
           "title": "Game File Validation Policy",
           "disable": "Disable Check",

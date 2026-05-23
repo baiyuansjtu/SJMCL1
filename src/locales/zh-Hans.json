@@ -920,6 +920,19 @@
       "title": "调试选项",
       "settings": {
         "noJvmArgs": "不添加默认的 JVM 参数",
+        "graphicsApi": {
+          "title": "图形 API",
+          "normal": "默认",
+          "openGL": "OpenGL",
+          "vulkan": "Vulkan"
+        },
+        "renderer": {
+          "title": "渲染器/驱动",
+          "normal": "默认",
+          "mesaLavapipe": "Mesa Lavapool",
+          "mesaDozen": "Mesa Dozen",
+          "amd": "AMD"
+        },
         "gameFileValidatePolicy": {
           "title": "游戏文件完整性检查策略",
           "disable": "不检查",

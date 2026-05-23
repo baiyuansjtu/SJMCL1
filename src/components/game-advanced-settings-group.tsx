@@ -60,6 +60,8 @@ const GameAdvancedSettingsGroups: React.FC<GameSettingsGroupsProps> = ({
   ];
 
   const gameFileValidatePolicies = ["disable", "normal", "full"];
+  const graphicsApis = ["normal", "openGL", "vulkan"];
+  const renderer = ["normal", "mesaLavapipe", "mesaDozen", "amd"];
   const updateGameAdvancedConfig = (key: string, value: any) => {
     updateGameConfig(`advanced.${key}`, value);
   };
@@ -274,6 +276,44 @@ const GameAdvancedSettingsGroups: React.FC<GameSettingsGroupsProps> = ({
                 }}
               />
             </HStack>
+          ),
+        },
+        {
+          title: t(
+            "GameAdvancedSettingsPage.workaround.settings.graphicsApi.title"
+          ),
+          children: (
+            <MenuSelector
+              options={graphicsApis.map((type) => ({
+                value: type,
+                label: t(
+                  `GameAdvancedSettingsPage.workaround.settings.graphicsApi.${type}`
+                ),
+              }))}
+              value={gameConfig.advanced.workaround.graphicsApi}
+              onSelect={(val) => {
+                updateGameAdvancedConfig("workaround.graphicsApi", val);
+              }}
+            />
+          ),
+        },
+        {
+          title: t(
+            "GameAdvancedSettingsPage.workaround.settings.renderer.title"
+          ),
+          children: (
+            <MenuSelector
+              options={renderer.map((type) => ({
+                value: type,
+                label: t(
+                  `GameAdvancedSettingsPage.workaround.settings.renderer.${type}`
+                ),
+              }))}
+              value={gameConfig.advanced.workaround.renderer}
+              onSelect={(val) => {
+                updateGameAdvancedConfig("workaround.renderer", val);
+              }}
+            />
           ),
         },
         {

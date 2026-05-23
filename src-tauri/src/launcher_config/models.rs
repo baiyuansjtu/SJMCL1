@@ -64,6 +64,23 @@ pub enum FileValidatePolicy {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
+pub enum GraphicsApi {
+  Normal,
+  OpenGL,
+  Vulkan,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
+#[serde(rename_all = "camelCase")]
+pub enum Renderer {
+  Normal,
+  MesaLavapipe,
+  MesaDozen,
+  Amd,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone)]
+#[serde(rename_all = "camelCase")]
 pub enum LauncherVisiablity {
   StartHidden,
   RunningHidden,
@@ -153,6 +170,10 @@ structstruck::strike! {
         pub game_file_validate_policy: FileValidatePolicy,
         pub dont_check_jvm_validity: bool,
         pub dont_patch_natives: bool,
+        #[default(GraphicsApi::Normal)]
+        pub graphics_api: GraphicsApi,
+        #[default(Renderer::Normal)]
+        pub renderer: Renderer,
         #[default = true]
         pub use_lwjgl_unsafe_agent: bool,
         pub use_native_glfw: bool,
